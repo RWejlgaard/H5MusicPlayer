@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
         mc:Ignorable="d"
-        Title="Yfitops" Height="450" Width="450" ResizeMode="NoResize">
+        Title="Yfitops" Height="450" Width="450" ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
         <!-- TimeTrack Slider -->
@@ -171,7 +171,23 @@
         </Grid.ColumnDefinitions>
 
         <!-- Song list -->
-        <ListView x:Name="SongList" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Source={x:Static properties:Settings.Default}, Path=Songs, Mode=TwoWay}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp"/>
+        <ListView x:Name="SongListView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding Path=Title}" Grid.Column="0" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Path=Artist}" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Path=Duration}" Grid.Column="2" HorizontalAlignment="Left"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <!-- Song controls -->
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
