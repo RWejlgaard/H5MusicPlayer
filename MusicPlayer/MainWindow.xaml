@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:properties="clr-namespace:MusicPlayer.Properties"
         mc:Ignorable="d"
         Title="Yfitops" Height="450" Width="450" ResizeMode="NoResize">
 
@@ -170,7 +171,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Song list -->
-        <ListView x:Name="SongList" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0"/>
+        <ListView x:Name="SongList" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Source={x:Static properties:Settings.Default}, Path=Songs, Mode=TwoWay}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp"/>
 
         <!-- Song controls -->
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
