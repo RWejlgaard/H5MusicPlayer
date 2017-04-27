@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Media;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using MusicPlayer.Properties;
+using TagLib;
+using WMPLib;
 
 namespace MusicPlayer {
     /// <summary>
@@ -11,29 +14,48 @@ namespace MusicPlayer {
     /// </summary>
     public partial class MainWindow {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
+        public WMPLib.WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        public PlayerState State = PlayerState.Stopped;
+
+        public enum PlayerState {
+            Playing,
+            Paused,
+            Stopped
+        }
 
         public MainWindow() {
             InitializeComponent();
-            
+
             // TODO Load songs from previous session
             //SongList = Settings.Default.Songs as ObservableCollection<Song>;
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
-                var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-                if (files != null)
-                    foreach (var file in files) {
-                        if (Regex.IsMatch(file, ".mp3$")) {
-                            SongList.Add(new Song {
-                                Path = file,
-                                Title = "Jolene",
-                                Artist = "Miley Cyrus",
-                                Duration = 120
-                            });
-                        }
+            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+            if (files == null) return;
+
+            foreach (var file in files) {
+                if (Regex.IsMatch(file, ".mp3$")) {
+                    try {
+                        var metadata = File.Create(file);
+
+                        SongList.Add(new Song {
+                            Path = file,
+                            Title = metadata.Tag.Title,
+                            Artist = metadata.Tag.FirstAlbumArtist,
+                            Duration = metadata.Properties.Duration
+                        });
                     }
+                    catch (CorruptFileException) {
+                        MessageBox.Show("File seems to be corrupt. Could not read metadata");
+                    }
+                    catch (Exception exception) {
+                        MessageBox.Show(exception.ToString());
+                    }
+                }
             }
         }
 
@@ -42,19 +64,28 @@ namespace MusicPlayer {
             //Settings.Default.Songs.Clear();
             //Settings.Default.Save();
             //Settings.Default.Reload();
-
-            SongList.Add(new Song
-            {
-                Path = "test path",
-                Title = "Jolene",
-                Artist = "Miley Cyrus",
-                Duration = 120
-            });
         }
 
         // TODO Save SongList to settings file
         private void MainWindow_OnClosed(object sender, EventArgs e) {
             Settings.Default.Songs = SongList;
+        }
+
+        private void PlayBtn_Click(object sender, RoutedEventArgs e) {
+            switch (State) {
+                case PlayerState.Stopped:
+                    var song = (Song) SongListView.SelectedItem;
+                    Player.URL = song.Path;
+                    Player.controls.play();
+                    State = PlayerState.Playing;
+                    break;
+                case PlayerState.Paused:
+
+                    break;
+                case PlayerState.Playing:
+
+                    break;
+            }
         }
     }
 }
