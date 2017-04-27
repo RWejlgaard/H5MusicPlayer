@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
-        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450"
+        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed"
         ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
@@ -169,7 +169,7 @@
         <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right"/>
 
         <!-- Song list -->
-        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp" Margin="5,0">
+        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp" Margin="5,0" MouseDoubleClick="SongListView_OnMouseDoubleClick" MouseDown="SongListView_OnMouseDown">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="410">
@@ -189,7 +189,7 @@
             <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
                 <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png"/>
             </Button>
-            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent">
+            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent" Click="PlayBtn_Click">
                 <Image x:Name="PlayBtnImage" Source="Resources\Play-96.png"/>
             </Button>
             <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">

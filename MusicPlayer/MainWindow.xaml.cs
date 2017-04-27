@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Media;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
@@ -14,20 +17,18 @@ namespace MusicPlayer {
     /// </summary>
     public partial class MainWindow {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public WMPLib.WindowsMediaPlayer Player = new WindowsMediaPlayer();
-        public PlayerState State = PlayerState.Stopped;
+        public Song ActiveSong;
 
-        public enum PlayerState {
-            Playing,
-            Paused,
-            Stopped
-        }
+        public WindowsMediaPlayer Player = new WindowsMediaPlayer();
+
+        public bool isPlaying = false;
 
         public MainWindow() {
             InitializeComponent();
 
-            // TODO Load songs from previous session
-            //SongList = Settings.Default.Songs as ObservableCollection<Song>;
+            foreach (var item in Settings.Default.SongPathList) {
+                AddSong(item);
+            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -38,23 +39,27 @@ namespace MusicPlayer {
             if (files == null) return;
 
             foreach (var file in files) {
-                if (Regex.IsMatch(file, ".mp3$")) {
-                    try {
-                        var metadata = File.Create(file);
+                AddSong(file);
+            }
+        }
 
-                        SongList.Add(new Song {
-                            Path = file,
-                            Title = metadata.Tag.Title,
-                            Artist = metadata.Tag.FirstAlbumArtist,
-                            Duration = metadata.Properties.Duration
-                        });
-                    }
-                    catch (CorruptFileException) {
-                        MessageBox.Show("File seems to be corrupt. Could not read metadata");
-                    }
-                    catch (Exception exception) {
-                        MessageBox.Show(exception.ToString());
-                    }
+        private void AddSong(string path) {
+            if (Regex.IsMatch(path, ".mp3$")) {
+                try {
+                    var metadata = File.Create(path);
+
+                    SongList.Add(new Song {
+                        Path = path,
+                        Title = metadata.Tag.Title,
+                        Artist = metadata.Tag.FirstAlbumArtist,
+                        Duration = metadata.Properties.Duration.TotalSeconds
+                    });
+                }
+                catch (CorruptFileException) {
+                    MessageBox.Show("File seems to be corrupt. Could not read metadata");
+                }
+                catch (Exception exception) {
+                    MessageBox.Show(exception.ToString());
                 }
             }
         }
@@ -68,23 +73,56 @@ namespace MusicPlayer {
 
         // TODO Save SongList to settings file
         private void MainWindow_OnClosed(object sender, EventArgs e) {
-            Settings.Default.Songs = SongList;
+            Settings.Default.SongPathList.Clear();
+            foreach (var item in SongList) {
+                Settings.Default.SongPathList.Add(item.Path);
+            }
+            Settings.Default.Save();
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
-            switch (State) {
-                case PlayerState.Stopped:
+            PlayPause();
+        }
+
+        private void PlayPause() {
+            if (!isPlaying) {
+                Player.URL = ActiveSong.Path;
+                Player.controls.play();
+                isPlaying = !isPlaying;
+            }
+            else if (isPlaying) {
+                Player.controls.pause();
+                isPlaying = !isPlaying;
+            }
+        }
+
+        private void SongListView_OnMouseDown(object sender, MouseButtonEventArgs e) {
+            DependencyObject obj = (DependencyObject) e.OriginalSource;
+
+            if (obj.GetType() != typeof(ListViewItem)) {
+                SongListView.SelectedItem = null;
+            }
+        }
+
+        private void SongListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            DependencyObject obj = (DependencyObject) e.OriginalSource;
+
+            while (obj != null && obj != SongListView) {
+                if (obj.GetType() == typeof(ListViewItem)) {
                     var song = (Song) SongListView.SelectedItem;
-                    Player.URL = song.Path;
-                    Player.controls.play();
-                    State = PlayerState.Playing;
-                    break;
-                case PlayerState.Paused:
+                    isPlaying = false;
 
-                    break;
-                case PlayerState.Playing:
+                    if (ActiveSong == song) {
+                        Player.controls.currentPosition = 0.0;
+                    }
+                    else {
+                        ActiveSong = song;
+                    }
 
+                    PlayPause();
                     break;
+                }
+                obj = VisualTreeHelper.GetParent(obj);
             }
         }
     }
