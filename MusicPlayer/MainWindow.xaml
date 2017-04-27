@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
-        mc:Ignorable="d"
-        Title="Yfitops" Height="450" Width="450" ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450"
+        ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
         <!-- TimeTrack Slider -->
@@ -22,7 +22,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="TimeTrackSliderRepeatButton1" TargetType="RepeatButton">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -34,7 +33,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="TimeTrackSliderThumb" TargetType="Thumb">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -46,7 +44,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <ControlTemplate x:Key="TimeTrackSliderTemplate"  TargetType="Slider">
             <Grid>
                 <Grid.RowDefinitions>
@@ -67,7 +64,6 @@
                 </Track>
             </Grid>
         </ControlTemplate>
-
         <Style x:Key="TimeTrackSlider" TargetType="Slider">
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -82,7 +78,7 @@
             </Style.Triggers>
         </Style>
 
-
+        <!-- VolumeTrack Slider -->
         <Style x:Key="VolumeSliderRepeatButton" TargetType="RepeatButton">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -96,7 +92,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="VolumeSliderRepeatButton1" TargetType="RepeatButton">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -108,7 +103,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="VolumeSliderThumb" TargetType="Thumb">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -120,7 +114,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <ControlTemplate x:Key="VolumeSliderTemplate"  TargetType="Slider">
             <Grid>
                 <Grid.RowDefinitions>
@@ -141,8 +134,7 @@
                 </Track>
             </Grid>
         </ControlTemplate>
-
-        <Style x:Key="VolumeSlider" TargetType="Slider">
+        <Style x:Key="VolumeTrackSlider" TargetType="Slider">
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -160,6 +152,7 @@
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -169,55 +162,54 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
+        <!-- Song list labels -->
+        <Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left"/>
+        <Label Content="Artist" FontSize="11" Grid.Row="0" Grid.Column="1" Margin="5,0" HorizontalAlignment="Left"/>
+        <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right"/>
 
         <!-- Song list -->
-        <ListView x:Name="SongListView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp">
+        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp" Margin="5,0">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="{Binding Path=Title}" Grid.Column="0" HorizontalAlignment="Left"/>
-                        <TextBlock Text="{Binding Path=Artist}" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <TextBlock Text="{Binding Path=Duration}" Grid.Column="2" HorizontalAlignment="Left"/>
+                    <Grid Width="410">
+                        <TextBlock Text="{Binding Path=Title}" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=Artist}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=Duration}" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <!-- Song controls -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
             <Button x:Name="ShuffleBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent">
-                <Image Source="Resources\Shuffle-96.png"/>
+                <Image x:Name="ShuffleBtnImage" Source="Resources\Shuffle-96.png"/>
             </Button>
             <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
-                <Image Source="Resources\Start-96.png"/>
+                <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png"/>
             </Button>
             <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent">
-                <Image Source="Resources\Play-96.png"/>
+                <Image x:Name="PlayBtnImage" Source="Resources\Play-96.png"/>
             </Button>
             <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
-                <Image Source="Resources\End-96.png"/>
+                <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png"/>
             </Button>
             <Button x:Name="RepeatBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent">
-                <Image Source="Resources\Repeat-96.png"/>
+                <Image x:Name="RepeatBtnImage" Source="Resources\Repeat-96.png"/>
             </Button>
         </StackPanel>
         
         <!-- Song volume -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,47,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,47,0">
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
                 <Image x:Name="VolumeStatusIcon" Source="Resources/Unmute-96.png" Height="20" Width="20"/>
             </Button>
-            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeSlider}" Width="100" Value="50" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
+            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="50" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
         </StackPanel>
 
         <!-- Song progress -->
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="15,0,15,5" VerticalAlignment="Center">
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="15,0,15,5" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
