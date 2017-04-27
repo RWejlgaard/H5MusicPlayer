@@ -179,11 +179,13 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding Path=Title}" Grid.Column="0" HorizontalAlignment="Left"/>
                         <TextBlock Text="{Binding Path=Artist}" Grid.Column="1" HorizontalAlignment="Left"/>
                         <TextBlock Text="{Binding Path=Duration}" Grid.Column="2" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Path=Path}" Grid.Column="3" HorizontalAlignment="Left"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -197,7 +199,7 @@
             <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
                 <Image Source="Resources\Start-96.png"/>
             </Button>
-            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent">
+            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent" Click="PlayBtn_Click">
                 <Image Source="Resources\Play-96.png"/>
             </Button>
             <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">

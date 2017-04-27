@@ -11,6 +11,6 @@ namespace MusicPlayer
         public string Path { get; set; }
         public string Title { get; set; }
         public string Artist { get; set; }
-        public int Duration { get; set; }
+        public TimeSpan Duration { get; set; }
     }
 }
