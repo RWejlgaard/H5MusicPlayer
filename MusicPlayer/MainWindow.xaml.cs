@@ -17,18 +17,14 @@ namespace MusicPlayer {
     /// </summary>
     public partial class MainWindow {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public Song ActiveSong;
+        public Song ActiveSong { get; set; }
 
-        public WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
 
-        public bool isPlaying = false;
+        public bool IsPlaying;
 
         public MainWindow() {
             InitializeComponent();
-
-            foreach (var item in Settings.Default.SongPathList) {
-                AddSong(item);
-            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -71,12 +67,25 @@ namespace MusicPlayer {
             //Settings.Default.Reload();
         }
 
-        // TODO Save SongList to settings file
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
+            //Loading of settings
+            foreach (var item in Settings.Default.SongPathList) {
+                AddSong(item);
+            }
+
+            Player.settings.volume = Settings.Default.Volume;
+        }
+
         private void MainWindow_OnClosed(object sender, EventArgs e) {
+            // Saving of Songlist paths
             Settings.Default.SongPathList.Clear();
             foreach (var item in SongList) {
                 Settings.Default.SongPathList.Add(item.Path);
             }
+
+            //Saving of volume
+            Settings.Default.Volume = Player.settings.volume;
+
             Settings.Default.Save();
         }
 
@@ -85,14 +94,14 @@ namespace MusicPlayer {
         }
 
         private void PlayPause() {
-            if (!isPlaying) {
+            if (!IsPlaying) {
                 Player.URL = ActiveSong.Path;
                 Player.controls.play();
-                isPlaying = !isPlaying;
+                IsPlaying = !IsPlaying;
             }
-            else if (isPlaying) {
+            else if (IsPlaying) {
                 Player.controls.pause();
-                isPlaying = !isPlaying;
+                IsPlaying = !IsPlaying;
             }
         }
 
@@ -110,7 +119,7 @@ namespace MusicPlayer {
             while (obj != null && obj != SongListView) {
                 if (obj.GetType() == typeof(ListViewItem)) {
                     var song = (Song) SongListView.SelectedItem;
-                    isPlaying = false;
+                    IsPlaying = false;
 
                     if (ActiveSong == song) {
                         Player.controls.currentPosition = 0.0;
@@ -124,6 +133,10 @@ namespace MusicPlayer {
                 }
                 obj = VisualTreeHelper.GetParent(obj);
             }
+        }
+
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            //Player.settings.volume = int.Parse(VolumeSlider.Value);
         }
     }
 }

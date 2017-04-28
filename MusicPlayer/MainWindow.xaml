@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
-        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed"
+        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed" Loaded="MainWindow_OnLoaded"
         ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
@@ -162,7 +162,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
         <!-- Song list labels -->
         <Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left"/>
         <Label Content="Artist" FontSize="11" Grid.Row="0" Grid.Column="1" Margin="5,0" HorizontalAlignment="Left"/>
@@ -199,13 +199,13 @@
                 <Image x:Name="RepeatBtnImage" Source="Resources\Repeat-96.png"/>
             </Button>
         </StackPanel>
-        
+
         <!-- Song volume -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,47,0">
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
                 <Image x:Name="VolumeStatusIcon" Source="Resources/Unmute-96.png" Height="20" Width="20"/>
             </Button>
-            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="50" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
+            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding Player.settings.volume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1" ValueChanged="VolumeSlider_ValueChanged"/>
         </StackPanel>
 
         <!-- Song progress -->
@@ -215,8 +215,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="TimeSpentLabel" Content="0:00" Grid.Column="0"/>
-            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Grid.Column="1" Width="Auto" Maximum="100" VerticalAlignment="Center" Margin="0,1,0,0"/>
+            <Label x:Name="TimeSpentLabel" Content="{Binding Player.controls.currentPosition}" Grid.Column="0"/>
+            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding Player.controls.currentPosition}" Grid.Column="1" Width="372" Maximum="{Binding Path=ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" HorizontalAlignment="Right"/>
             <Label x:Name="TimeLeftLabel" Content="0:00" Grid.Column="2"/>
         </Grid>
 
