@@ -209,7 +209,7 @@
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
                 <Image x:Name="VolumeStatusIcon" Source="Resources/Unmute-96.png" Height="20" Width="20"/>
             </Button>
-            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding Player.settings.volume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1" ValueChanged="VolumeSlider_ValueChanged"/>
+            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding Player.settings.volume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
         </StackPanel>
 
         <!-- Song progress -->
@@ -219,8 +219,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="TimeSpentLabel" Content="{Binding Player.controls.currentPosition}" Grid.Column="0"/>
-            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding Player.controls.currentPosition}" Grid.Column="1" Width="372" Maximum="{Binding Path=ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" HorizontalAlignment="Right"/>
+            <Label x:Name="TimeSpentLabel" Content="{Binding Player.controls.currentPositionString}" Grid.Column="0"/>
+            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="0" Grid.Column="1" Width="372" Maximum="{Binding ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" HorizontalAlignment="Right"/>
             <Label x:Name="TimeLeftLabel" Content="0:00" Grid.Column="2"/>
         </Grid>
 

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Media;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using MusicPlayer.Annotations;
 using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
@@ -18,54 +15,20 @@ namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : INotifyPropertyChanged {
+    public partial class MainWindow {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public Song ActiveSong { get; set; }
+        public Song ActiveSong;
 
-        public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
+        public WindowsMediaPlayer Player = new WindowsMediaPlayer();
 
-        private bool _isPlaying;
-
-        public bool IsPlaying {
-            get => _isPlaying;
-            set {
-                _isPlaying = value;
-                OnPropertyChanged(nameof(IsPlaying));
-            }
-        }
-
-        public double PauseTime {
-            get {
-                OnPropertyChanged(nameof(ActiveSong));
-                return Player.controls.currentPosition;
-            }
-            set {
-                //Player.controls.currentPosition = value;
-                //OnPropertyChanged(nameof(ActiveSong));
-                
-            }
-        }
-
-
-
-        public int CurrentVolume
-        {
-            get => Player.settings.volume;
-            set
-            {
-                Player.settings.volume = value;
-                OnPropertyChanged(nameof(CurrentVolume));
-            }
-        }
+        public bool isPlaying = false;
 
         public MainWindow() {
             InitializeComponent();
-            
-            Player.PositionChange += delegate(double position, double newPosition) {
-                TimeSlider.Value = newPosition;
-                OnPropertyChanged(nameof(TimeSlider));
-            };
 
+            foreach (var item in Settings.Default.SongPathList) {
+                AddSong(item);
+            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -108,51 +71,28 @@ namespace MusicPlayer {
             //Settings.Default.Reload();
         }
 
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
-            //Loading of settings
-            foreach (var item in Settings.Default.SongPathList) {
-                AddSong(item);
-            }
-
-            Player.settings.volume = Settings.Default.Volume;
-        }
-
+        // TODO Save SongList to settings file
         private void MainWindow_OnClosed(object sender, EventArgs e) {
-            // Saving of Songlist paths
             Settings.Default.SongPathList.Clear();
             foreach (var item in SongList) {
                 Settings.Default.SongPathList.Add(item.Path);
             }
-
-            //Saving of volume
-            Settings.Default.Volume = Player.settings.volume;
-
             Settings.Default.Save();
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
-            PauseTime = TimeSlider.Value;
             PlayPause();
         }
 
-        // TODO Fix starting over if it's the same song
         private void PlayPause() {
-           // PauseTime = Player.controls.currentPosition;
-
-            if (ActiveSong == null) ActiveSong = SongList.First();
-
-            // Play
-            if (!IsPlaying) {
+            if (!isPlaying) {
                 Player.URL = ActiveSong.Path;
                 Player.controls.play();
-                Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 10;
-
-                IsPlaying = !IsPlaying;
-            } // Pause
-            else if (IsPlaying) {
-                PauseTime = Player.controls.currentPosition;
+                isPlaying = !isPlaying;
+            }
+            else if (isPlaying) {
                 Player.controls.pause();
-                IsPlaying = !IsPlaying;
+                isPlaying = !isPlaying;
             }
         }
 
@@ -170,14 +110,13 @@ namespace MusicPlayer {
             while (obj != null && obj != SongListView) {
                 if (obj.GetType() == typeof(ListViewItem)) {
                     var song = (Song) SongListView.SelectedItem;
-                    IsPlaying = false;
+                    isPlaying = false;
 
                     if (ActiveSong == song) {
                         Player.controls.currentPosition = 0.0;
                     }
                     else {
                         ActiveSong = song;
-                        OnPropertyChanged(nameof(ActiveSong));
                     }
 
                     PlayPause();
@@ -185,15 +124,6 @@ namespace MusicPlayer {
                 }
                 obj = VisualTreeHelper.GetParent(obj);
             }
-        }
-
-        public object RaisePropertyEvent { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

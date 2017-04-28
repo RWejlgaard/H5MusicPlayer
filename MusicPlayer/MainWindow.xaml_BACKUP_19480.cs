@@ -24,48 +24,31 @@ namespace MusicPlayer {
 
         public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
 
+<<<<<<< HEAD
         private bool _isPlaying;
-
         public bool IsPlaying {
-            get => _isPlaying;
+            get { return _isPlaying; }
             set {
                 _isPlaying = value;
                 OnPropertyChanged(nameof(IsPlaying));
             }
         }
 
-        public double PauseTime {
-            get {
-                OnPropertyChanged(nameof(ActiveSong));
-                return Player.controls.currentPosition;
-            }
-            set {
-                //Player.controls.currentPosition = value;
-                //OnPropertyChanged(nameof(ActiveSong));
-                
-            }
-        }
-
-
-
         public int CurrentVolume
         {
-            get => Player.settings.volume;
+            get { return Player.settings.volume; }
             set
             {
                 Player.settings.volume = value;
                 OnPropertyChanged(nameof(CurrentVolume));
             }
         }
+=======
+        public bool IsPlaying;
+>>>>>>> f-Volume-binding
 
         public MainWindow() {
             InitializeComponent();
-            
-            Player.PositionChange += delegate(double position, double newPosition) {
-                TimeSlider.Value = newPosition;
-                OnPropertyChanged(nameof(TimeSlider));
-            };
-
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -131,26 +114,17 @@ namespace MusicPlayer {
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
-            PauseTime = TimeSlider.Value;
             PlayPause();
         }
 
         // TODO Fix starting over if it's the same song
         private void PlayPause() {
-           // PauseTime = Player.controls.currentPosition;
-
-            if (ActiveSong == null) ActiveSong = SongList.First();
-
-            // Play
             if (!IsPlaying) {
                 Player.URL = ActiveSong.Path;
                 Player.controls.play();
-                Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 10;
-
                 IsPlaying = !IsPlaying;
-            } // Pause
+            }
             else if (IsPlaying) {
-                PauseTime = Player.controls.currentPosition;
                 Player.controls.pause();
                 IsPlaying = !IsPlaying;
             }
@@ -177,7 +151,6 @@ namespace MusicPlayer {
                     }
                     else {
                         ActiveSong = song;
-                        OnPropertyChanged(nameof(ActiveSong));
                     }
 
                     PlayPause();
@@ -187,6 +160,7 @@ namespace MusicPlayer {
             }
         }
 
+<<<<<<< HEAD
         public object RaisePropertyEvent { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -194,6 +168,10 @@ namespace MusicPlayer {
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+=======
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            //Player.settings.volume = int.Parse(VolumeSlider.Value);
+>>>>>>> f-Volume-binding
         }
     }
 }
