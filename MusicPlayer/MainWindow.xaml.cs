@@ -115,7 +115,7 @@ namespace MusicPlayer {
                     SongList.Add(new Song {
                         Path = path,
                         Title = metadata.Tag.Title,
-                        Artist = metadata.Tag.FirstAlbumArtist,
+                        Artist = metadata.Tag.Performers[0],
                         Duration = metadata.Properties.Duration.TotalSeconds
                     });
                 }
@@ -126,14 +126,6 @@ namespace MusicPlayer {
                     MessageBox.Show(exception.ToString());
                 }
             }
-        }
-
-        // TODO Fix clearing
-        private void SongList_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            //if (Settings.Default.Songs.Count == 0) return;
-            //Settings.Default.Songs.Clear();
-            //Settings.Default.Save();
-            //Settings.Default.Reload();
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
@@ -173,27 +165,32 @@ namespace MusicPlayer {
         private void PlayPause() {
             //PauseTime = CurrentTime;
 
-            if (ActiveSong == null) ActiveSong = SongList.First();
+            if (SongList.Count > 0)
+            {
+                if (ActiveSong == null) ActiveSong = SongList.First();
 
-            // Play
-            if (!IsPlaying) {
-                if (Player.URL != ActiveSong.Path)
-                    Player.URL = ActiveSong.Path;
-                Player.controls.play();
-                //Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 0.0;
-                Player.controls.currentPosition = PauseTime;
-                IsPlaying = !IsPlaying;
-            } // Pause
-            else if (IsPlaying) {
-                PauseTime = Player.controls.currentPosition;
-                Player.controls.pause();
-                IsPlaying = !IsPlaying;
+                // Play
+                if (!IsPlaying)
+                {
+                    if (Player.URL != ActiveSong.Path)
+                        Player.URL = ActiveSong.Path;
+                    Player.controls.play();
+                    //Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 0.0;
+                    Player.controls.currentPosition = PauseTime;
+                    IsPlaying = !IsPlaying;
+                } // Pause
+                else if (IsPlaying)
+                {
+                    PauseTime = Player.controls.currentPosition;
+                    Player.controls.pause();
+                    IsPlaying = !IsPlaying;
+                }
             }
         }
 
         private void SongListView_OnMouseDown(object sender, MouseButtonEventArgs e) {
             DependencyObject obj = (DependencyObject) e.OriginalSource;
-
+            
             if (obj.GetType() != typeof(ListViewItem)) {
                 SongListView.SelectedItem = null;
             }
@@ -201,6 +198,15 @@ namespace MusicPlayer {
 
         private void SongListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             DependencyObject obj = (DependencyObject) e.OriginalSource;
+
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                if (SongList.Count == 0) return;
+                SongList.Clear();
+                IsPlaying = false;
+                Player.controls.stop();
+                return;
+            }
 
             while (obj != null && obj != SongListView) {
                 if (obj.GetType() == typeof(ListViewItem)) {
@@ -220,6 +226,14 @@ namespace MusicPlayer {
                 }
                 obj = VisualTreeHelper.GetParent(obj);
             }
+        }
+
+        // TODO Fix clearing
+        private void SongList_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+            //if (Settings.Default.Songs.Count == 0) return;
+            //Settings.Default.Songs.Clear();
+            //Settings.Default.Save();
+            //Settings.Default.Reload();
         }
 
         private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {

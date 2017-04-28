@@ -179,7 +179,7 @@
         <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right"/>
 
         <!-- Song list -->
-        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" MouseRightButtonUp="SongList_OnMouseRightButtonUp" Margin="5,0" MouseDoubleClick="SongListView_OnMouseDoubleClick" MouseDown="SongListView_OnMouseDown">
+        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" Margin="5,0" MouseDown="SongListView_OnMouseDown" MouseDoubleClick="SongListView_OnMouseDoubleClick" MouseRightButtonUp="SongList_OnMouseRightButtonUp">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="410">
