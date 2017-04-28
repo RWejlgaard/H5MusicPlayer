@@ -205,7 +205,7 @@
                 <Image x:Name="PlayBtnImage" Source="{Binding Path=IsPlaying, Converter={StaticResource BoolPlayPauseImageConverter}}"/>
             </Button>
             <!-- TODO Make next song start-->
-            <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
+            <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent" Click="ForwardBtn_OnClick">
                 <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png"/>
             </Button>
             <!-- TODO Make it repeat playlist after last song finishes -->
@@ -231,7 +231,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label x:Name="TimeSpentLabel" Content="0:00" Grid.Column="0" HorizontalAlignment="Left"/>
-            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding CurrentTime, Mode=TwoWay}" Grid.Column="1" Width="Auto" Maximum="{Binding ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" ValueChanged="TimeSlider_OnValueChanged"/>
+            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding CurrentTime, Mode=TwoWay}" Grid.Column="1" Width="Auto" Maximum="{Binding ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" ValueChanged="TimeSlider_ValueChanged" Thumb.DragStarted="TimeSlider_OnDragStarted"  Thumb.DragCompleted="TimeSlider_OnDragCompleted"/>
             <Label x:Name="TimeLeftLabel" Content="0:00" Grid.Column="2" HorizontalAlignment="Right"/>
         </Grid>
 
