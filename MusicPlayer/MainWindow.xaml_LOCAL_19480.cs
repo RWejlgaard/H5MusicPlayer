@@ -20,59 +20,22 @@ namespace MusicPlayer {
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public Song ActiveSong { get; set; }
+        public Song ActiveSong;
 
-        public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
-
-        private bool _isShuffling;
-        public bool IsShuffling
-        {
-            get { return _isShuffling; }
-            set
-            {
-                _isShuffling = value;
-                OnPropertyChanged(nameof(IsShuffling));
-            }
-        }
-
-        private bool _isRepeating;
-        public bool IsRepeating
-        {
-            get { return _isRepeating; }
-            set
-            {
-                _isRepeating = value;
-                OnPropertyChanged(nameof(IsRepeating));
-            }
-        }
+        public WindowsMediaPlayer Player = new WindowsMediaPlayer();
 
         private bool _isPlaying;
-
         public bool IsPlaying {
-            get => _isPlaying;
+            get { return _isPlaying; }
             set {
                 _isPlaying = value;
                 OnPropertyChanged(nameof(IsPlaying));
             }
         }
 
-        public double PauseTime {
-            get {
-                OnPropertyChanged(nameof(ActiveSong));
-                return Player.controls.currentPosition;
-            }
-            set {
-                //Player.controls.currentPosition = value;
-                //OnPropertyChanged(nameof(ActiveSong));
-                
-            }
-        }
-
-
-
         public int CurrentVolume
         {
-            get => Player.settings.volume;
+            get { return Player.settings.volume; }
             set
             {
                 Player.settings.volume = value;
@@ -80,25 +43,12 @@ namespace MusicPlayer {
             }
         }
 
-        private double _currentTime;
-        public double CurrentTime
-        {
-            get { return _currentTime; }
-            set
-            {
-                _currentTime = value;
-                OnPropertyChanged(nameof(CurrentTime));
-            }
-        }
-
         public MainWindow() {
             InitializeComponent();
-            
-            Player.PositionChange += delegate(double position, double newPosition) {
-                TimeSlider.Value = newPosition;
-                OnPropertyChanged(nameof(TimeSlider));
-            };
 
+            foreach (var item in Settings.Default.SongPathList) {
+                AddSong(item);
+            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -141,58 +91,27 @@ namespace MusicPlayer {
             //Settings.Default.Reload();
         }
 
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
-            //Loading of settings
-            foreach (var item in Settings.Default.SongPathList) {
-                AddSong(item);
-            }
-
-            Player.settings.volume = Settings.Default.Volume;
-        }
-
+        // TODO Save SongList to settings file
         private void MainWindow_OnClosed(object sender, EventArgs e) {
-            // Saving of Songlist paths
             Settings.Default.SongPathList.Clear();
             foreach (var item in SongList) {
                 Settings.Default.SongPathList.Add(item.Path);
             }
-
-            //Saving of volume
-            Settings.Default.Volume = Player.settings.volume;
-
             Settings.Default.Save();
         }
 
-        private void ShuffleBtn_OnClick(object sender, RoutedEventArgs e) {
-            IsShuffling = !IsShuffling;
-        }
-
-        private void RepeatBtn_OnClick(object sender, RoutedEventArgs e)
-        {
-            IsRepeating = !IsRepeating;
-        }
-
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
-            PauseTime = TimeSlider.Value;
             PlayPause();
         }
 
         // TODO Fix starting over if it's the same song
         private void PlayPause() {
-           // PauseTime = Player.controls.currentPosition;
-
-            if (ActiveSong == null) ActiveSong = SongList.First();
-
-            // Play
             if (!IsPlaying) {
                 Player.URL = ActiveSong.Path;
                 Player.controls.play();
-                Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 10;
-
                 IsPlaying = !IsPlaying;
-            } // Pause
+            }
             else if (IsPlaying) {
-                PauseTime = Player.controls.currentPosition;
                 Player.controls.pause();
                 IsPlaying = !IsPlaying;
             }
@@ -219,7 +138,6 @@ namespace MusicPlayer {
                     }
                     else {
                         ActiveSong = song;
-                        OnPropertyChanged(nameof(ActiveSong));
                     }
 
                     PlayPause();
@@ -236,10 +154,6 @@ namespace MusicPlayer {
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void TimeSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            Player.controls.currentPosition = CurrentTime;
         }
     }
 }
