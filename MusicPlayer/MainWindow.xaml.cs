@@ -20,9 +20,9 @@ namespace MusicPlayer {
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public Song ActiveSong;
+        public Song ActiveSong { get; set; }
 
-        public WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
 
         private bool _isPlaying;
         public bool IsPlaying {
@@ -45,10 +45,6 @@ namespace MusicPlayer {
 
         public MainWindow() {
             InitializeComponent();
-
-            foreach (var item in Settings.Default.SongPathList) {
-                AddSong(item);
-            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -91,12 +87,25 @@ namespace MusicPlayer {
             //Settings.Default.Reload();
         }
 
-        // TODO Save SongList to settings file
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
+            //Loading of settings
+            foreach (var item in Settings.Default.SongPathList) {
+                AddSong(item);
+            }
+
+            Player.settings.volume = Settings.Default.Volume;
+        }
+
         private void MainWindow_OnClosed(object sender, EventArgs e) {
+            // Saving of Songlist paths
             Settings.Default.SongPathList.Clear();
             foreach (var item in SongList) {
                 Settings.Default.SongPathList.Add(item.Path);
             }
+
+            //Saving of volume
+            Settings.Default.Volume = Player.settings.volume;
+
             Settings.Default.Save();
         }
 
