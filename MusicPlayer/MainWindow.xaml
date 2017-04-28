@@ -11,12 +11,12 @@
 
     <Window.Resources>
         <!-- Colours -->
-        <SolidColorBrush x:Key="AccentColour" Color="#A936F1"/>
+        <SolidColorBrush x:Key="AccentColour" Color="#A936F1"/> 
 
         <!-- Converters -->
-        <conv:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/>
-        <conv:BoolShuffleImageConverter x:Key="BoolShuffleImageConverter"/>
-        <conv:BoolRepeatImageConverter x:Key="BoolRepeatImageConverter"/>
+        <conv:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/> 
+        <conv:BoolShuffleImageConverter x:Key="BoolShuffleImageConverter"/> 
+        <conv:BoolRepeatImageConverter x:Key="BoolRepeatImageConverter"/> 
         
         <!-- TimeTrack Slider -->
         <Style x:Key="TimeTrackSliderRepeatButton" TargetType="RepeatButton">
