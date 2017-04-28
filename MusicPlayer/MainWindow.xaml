@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:MusicPlayer"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
+        xmlns:conv="clr-namespace:MusicPlayer.Converters"
         mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed" Loaded="MainWindow_OnLoaded"
         ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
+        <!-- Colours -->
+        <SolidColorBrush x:Key="AccentColour" Color="#A936F1"/>
+
         <!-- Converters -->
-        <l:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/>
+        <conv:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/>
+        <conv:BoolShuffleImageConverter x:Key="BoolShuffleImageConverter"/>
+        <conv:BoolRepeatImageConverter x:Key="BoolRepeatImageConverter"/>
         
         <!-- TimeTrack Slider -->
         <Style x:Key="TimeTrackSliderRepeatButton" TargetType="RepeatButton">
@@ -32,7 +38,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="#A936F1"  BorderThickness="1" BorderBrush="#A936F1" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"  BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -43,7 +49,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="#A936F1"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}"></Ellipse>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -102,7 +108,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="#A936F1"  BorderThickness="1" BorderBrush="#A936F1" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"  BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -113,7 +119,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="#A936F1"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}"></Ellipse>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -187,31 +193,36 @@
 
         <!-- Song controls -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
-            <Button x:Name="ShuffleBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent">
-                <Image x:Name="ShuffleBtnImage" Source="Resources\Shuffle-96.png"/>
+            <!-- TODO Make it randomly generate next song -->
+            <Button x:Name="ShuffleBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent" Click="ShuffleBtn_OnClick">
+                <Image x:Name="ShuffleBtnImage" Source="{Binding Path=IsShuffling, Converter={StaticResource BoolShuffleImageConverter}}"/>
             </Button>
+            <!-- TODO Make song restart, if pressed while CurrentPosition is less than 3 seconds play previous song -->
             <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
                 <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png"/>
             </Button>
             <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent" Click="PlayBtn_Click">
                 <Image x:Name="PlayBtnImage" Source="{Binding Path=IsPlaying, Converter={StaticResource BoolPlayPauseImageConverter}}"/>
             </Button>
+            <!-- TODO Make next song start-->
             <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
                 <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png"/>
             </Button>
-            <Button x:Name="RepeatBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent">
-                <Image x:Name="RepeatBtnImage" Source="Resources\Repeat-96.png"/>
+            <!-- TODO Make it repeat playlist after last song finishes -->
+            <Button x:Name="RepeatBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent" Click="RepeatBtn_OnClick">
+                <Image x:Name="RepeatBtnImage" Source="{Binding Path=IsRepeating, Converter={StaticResource BoolRepeatImageConverter}}"/>
             </Button>
         </StackPanel>
 
         <!-- Song volume -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,47,0">
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
-                <Image x:Name="VolumeStatusIcon" Source="Resources/Unmute-96.png" Height="20" Width="20"/>
+                <Image x:Name="VolumeStatusIcon" Source="Resources/High-96.png" Height="20" Width="20"/>
             </Button>
-            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding Player.settings.volume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1" ValueChanged="VolumeSlider_ValueChanged"/>
+            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding Player.settings.volume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
         </StackPanel>
 
+        <!-- TODO Fix TimeTracking -->
         <!-- Song progress -->
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="15,0,15,5" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
@@ -219,9 +230,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="TimeSpentLabel" Content="{Binding Player.controls.currentPosition}" Grid.Column="0"/>
-            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding Player.controls.currentPosition}" Grid.Column="1" Width="372" Maximum="{Binding Path=ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" HorizontalAlignment="Right"/>
-            <Label x:Name="TimeLeftLabel" Content="0:00" Grid.Column="2"/>
+            <Label x:Name="TimeSpentLabel" Content="0:00" Grid.Column="0" HorizontalAlignment="Left"/>
+            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Value="{Binding CurrentTime, Mode=TwoWay}" Grid.Column="1" Width="Auto" Maximum="{Binding ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" ValueChanged="TimeSlider_OnValueChanged"/>
+            <Label x:Name="TimeLeftLabel" Content="0:00" Grid.Column="2" HorizontalAlignment="Right"/>
         </Grid>
 
     </Grid>

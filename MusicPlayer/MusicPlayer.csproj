@@ -61,7 +61,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoolPlayPauseImageConverter.cs" />
+    <Compile Include="Converters\BoolPlayPauseImageConverter.cs" />
+    <Compile Include="Converters\BoolRepeatImageConverter.cs" />
+    <Compile Include="Converters\BoolShuffleImageConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Song.cs" />
     <Page Include="MainWindow.xaml">
@@ -118,13 +120,23 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\End-96.png" />
-    <Resource Include="Resources\Unmute-96.png" />
+    <Resource Include="Resources\High-96.png" />
     <Resource Include="Resources\Mute-96.png" />
     <Resource Include="Resources\Pause-96.png" />
     <Resource Include="Resources\Play-96.png" />
     <Resource Include="Resources\Repeat-96.png" />
     <Resource Include="Resources\Shuffle-96.png" />
     <Resource Include="Resources\Start-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Low Volume-96.png" />
+    <Resource Include="Resources\Medium Volume-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Shuffle-Enabled-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Repeat-Enabled-96.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

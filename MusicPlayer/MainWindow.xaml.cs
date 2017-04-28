@@ -24,6 +24,28 @@ namespace MusicPlayer {
 
         public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
 
+        private bool _isShuffling;
+        public bool IsShuffling
+        {
+            get { return _isShuffling; }
+            set
+            {
+                _isShuffling = value;
+                OnPropertyChanged(nameof(IsShuffling));
+            }
+        }
+
+        private bool _isRepeating;
+        public bool IsRepeating
+        {
+            get { return _isRepeating; }
+            set
+            {
+                _isRepeating = value;
+                OnPropertyChanged(nameof(IsRepeating));
+            }
+        }
+
         private bool _isPlaying;
         public bool IsPlaying {
             get { return _isPlaying; }
@@ -40,6 +62,17 @@ namespace MusicPlayer {
             {
                 Player.settings.volume = value;
                 OnPropertyChanged(nameof(CurrentVolume));
+            }
+        }
+
+        private double _currentTime;
+        public double CurrentTime
+        {
+            get { return _currentTime; }
+            set
+            {
+                _currentTime = value;
+                OnPropertyChanged(nameof(CurrentTime));
             }
         }
 
@@ -109,6 +142,15 @@ namespace MusicPlayer {
             Settings.Default.Save();
         }
 
+        private void ShuffleBtn_OnClick(object sender, RoutedEventArgs e) {
+            IsShuffling = !IsShuffling;
+        }
+
+        private void RepeatBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            IsRepeating = !IsRepeating;
+        }
+
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
             PlayPause();
         }
@@ -163,6 +205,10 @@ namespace MusicPlayer {
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void TimeSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            Player.controls.currentPosition = CurrentTime;
         }
     }
 }

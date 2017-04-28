@@ -49,3 +49,4 @@ C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\poli
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\taglib-sharp.dll
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\policy.2.0.taglib-sharp.config
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csprojResolveAssemblyReference.cache
