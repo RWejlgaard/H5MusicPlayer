@@ -38,9 +38,14 @@ C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\Main
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.g.resources
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.Properties.Resources.resources
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csproj.GenerateResource.Cache
-C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csprojResolveAssemblyReference.cache
 C:\Users\z6zrw\Source\Repos\H5MusicPlayer\MusicPlayer\bin\Debug\policy.2.0.taglib-sharp.dll
 C:\Users\z6zrw\Source\Repos\H5MusicPlayer\MusicPlayer\bin\Debug\taglib-sharp.dll
 C:\Users\z6zrw\Source\Repos\H5MusicPlayer\MusicPlayer\bin\Debug\policy.2.0.taglib-sharp.config
 C:\Users\z6zrw\Source\Repos\H5MusicPlayer\MusicPlayer\obj\Debug\Interop.WMPLib.dll
 C:\Users\z6zrw\Source\Repos\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csproj.ResolveComReference.cache
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\Interop.WMPLib.dll
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csproj.ResolveComReference.cache
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\policy.2.0.taglib-sharp.dll
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\taglib-sharp.dll
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\policy.2.0.taglib-sharp.config
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs

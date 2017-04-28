@@ -3,11 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:MusicPlayer"
         xmlns:properties="clr-namespace:MusicPlayer.Properties"
         mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed"
         ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
+        <!-- Converters -->
+        <l:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/>
+        
         <!-- TimeTrack Slider -->
         <Style x:Key="TimeTrackSliderRepeatButton" TargetType="RepeatButton">
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -28,7 +32,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="Green"  BorderThickness="1" BorderBrush="YellowGreen" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="#A936F1"  BorderThickness="1" BorderBrush="#A936F1" Height="3"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -39,7 +43,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="Green"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="#A936F1"></Ellipse>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -98,7 +102,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="Green"  BorderThickness="1" BorderBrush="YellowGreen" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="#A936F1"  BorderThickness="1" BorderBrush="#A936F1" Height="3"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -109,7 +113,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="Green"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="#A936F1"></Ellipse>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -190,7 +194,7 @@
                 <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png"/>
             </Button>
             <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent" Click="PlayBtn_Click">
-                <Image x:Name="PlayBtnImage" Source="Resources\Play-96.png"/>
+                <Image x:Name="PlayBtnImage" Source="{Binding Path=IsPlaying, Converter={StaticResource BoolPlayPauseImageConverter}}"/>
             </Button>
             <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent">
                 <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png"/>

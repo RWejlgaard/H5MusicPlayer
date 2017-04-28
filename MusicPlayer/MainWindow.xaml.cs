@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Media;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MusicPlayer.Annotations;
 using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
@@ -15,13 +18,30 @@ namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow {
+    public partial class MainWindow : INotifyPropertyChanged {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
         public Song ActiveSong;
 
         public WindowsMediaPlayer Player = new WindowsMediaPlayer();
 
-        public bool isPlaying = false;
+        private bool _isPlaying;
+        public bool IsPlaying {
+            get { return _isPlaying; }
+            set {
+                _isPlaying = value;
+                OnPropertyChanged(nameof(IsPlaying));
+            }
+        }
+
+        public int CurrentVolume
+        {
+            get { return Player.settings.volume; }
+            set
+            {
+                Player.settings.volume = value;
+                OnPropertyChanged(nameof(CurrentVolume));
+            }
+        }
 
         public MainWindow() {
             InitializeComponent();
@@ -84,15 +104,16 @@ namespace MusicPlayer {
             PlayPause();
         }
 
+        // TODO Fix starting over if it's the same song
         private void PlayPause() {
-            if (!isPlaying) {
+            if (!IsPlaying) {
                 Player.URL = ActiveSong.Path;
                 Player.controls.play();
-                isPlaying = !isPlaying;
+                IsPlaying = !IsPlaying;
             }
-            else if (isPlaying) {
+            else if (IsPlaying) {
                 Player.controls.pause();
-                isPlaying = !isPlaying;
+                IsPlaying = !IsPlaying;
             }
         }
 
@@ -110,7 +131,7 @@ namespace MusicPlayer {
             while (obj != null && obj != SongListView) {
                 if (obj.GetType() == typeof(ListViewItem)) {
                     var song = (Song) SongListView.SelectedItem;
-                    isPlaying = false;
+                    IsPlaying = false;
 
                     if (ActiveSong == song) {
                         Player.controls.currentPosition = 0.0;
@@ -124,6 +145,15 @@ namespace MusicPlayer {
                 }
                 obj = VisualTreeHelper.GetParent(obj);
             }
+        }
+
+        public object RaisePropertyEvent { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
