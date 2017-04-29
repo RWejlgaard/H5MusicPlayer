@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\End-96.png" />
-    <Resource Include="Resources\High-96.png" />
+    <Resource Include="Resources\HighVolume-96.png" />
     <Resource Include="Resources\Mute-96.png" />
     <Resource Include="Resources\Pause-96.png" />
     <Resource Include="Resources\Play-96.png" />
@@ -137,8 +137,8 @@
     <Resource Include="Resources\Start-96.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Low Volume-96.png" />
-    <Resource Include="Resources\Medium Volume-96.png" />
+    <Resource Include="Resources\LowVolume-96.png" />
+    <Resource Include="Resources\MediumVolume-96.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Shuffle-Enabled-96.png" />

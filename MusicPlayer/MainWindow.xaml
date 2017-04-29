@@ -214,7 +214,7 @@
         <!-- Song volume -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="17,0,0,0">
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
-                <Image x:Name="VolumeBtnImage" Source="Resources/High-96.png" Height="20" Width="20"/>
+                <Image x:Name="VolumeBtnImage" Source="Resources/HighVolume-96.png" Height="20" Width="20"/>
             </Button>
             <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding CurrentVolume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
             <Label x:Name="VolumeValueLabel" Content="{Binding CurrentVolume, FallbackValue=0}" HorizontalAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,1"/>
