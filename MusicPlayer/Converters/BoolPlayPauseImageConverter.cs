@@ -6,7 +6,7 @@ namespace MusicPlayer.Converters
     public class BoolPlayPauseImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            if ((bool)value) {
+            if (value != null && (bool)value) {
                 return "\\Resources\\Pause-96.png";
             }
             return "\\Resources\\Play-96.png";

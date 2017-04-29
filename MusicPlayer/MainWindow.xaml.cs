@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Media;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -10,11 +9,16 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using MusicPlayer.Annotations;
 using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
 
+// TODO Make VolumeBtn save CurrentVolume and then change volume to 0 (Use _volumeMuted and _savedVolume
+// TODO Make VolumeBtnImage change depending on what CurrentVolume is at
+// TODO Rework SongListView
+// TODO Fix 
 namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,8 +28,12 @@ namespace MusicPlayer {
         public Song ActiveSong { get; set; }
         public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
         private bool _timeDragStarted;
+        private bool _timerTick;
+        //private bool _volumeMuted;
+        //private int _savedVolume;
 
         private bool _isShuffling;
+
         public bool IsShuffling {
             get { return _isShuffling; }
             set {
@@ -35,6 +43,7 @@ namespace MusicPlayer {
         }
 
         private bool _isRepeating;
+
         public bool IsRepeating {
             get { return _isRepeating; }
             set {
@@ -44,6 +53,7 @@ namespace MusicPlayer {
         }
 
         private bool _isPlaying;
+
         public bool IsPlaying {
             get { return _isPlaying; }
             set {
@@ -53,46 +63,51 @@ namespace MusicPlayer {
         }
 
         private double _currentTime;
-        public double CurrentTime
-        {
+
+        public double CurrentTime {
             get { return _currentTime; }
-            set
-            {
-                //_currentTime = value;
-                _currentTime = Player.controls.currentPosition;
+            set {
+                _currentTime = value;
                 OnPropertyChanged(nameof(CurrentTime));
             }
         }
-        
+
+        private int _currentVolume;
+
         public int CurrentVolume {
-            get { return Player.settings.volume; }
+            get { return _currentVolume; }
             set {
+                _currentVolume = value;
                 Player.settings.volume = value;
                 OnPropertyChanged(nameof(CurrentVolume));
             }
         }
 
-        public double PauseTime
-        {
-            get
-            {
-                OnPropertyChanged(nameof(ActiveSong));
-                return Player.controls.currentPosition;
-            }
-            set
-            {
-                //Player.controls.currentPosition = value;
-                //OnPropertyChanged(nameof(ActiveSong));
+        private double _pauseTime;
+
+        public double PauseTime {
+            get { return _pauseTime; }
+            set {
+                _pauseTime = value;
+                OnPropertyChanged(nameof(PauseTime));
             }
         }
 
         public MainWindow() {
             InitializeComponent();
 
-            Player.PositionChange += delegate(double position, double newPosition) {
-                TimeSlider.Value = newPosition;
-                OnPropertyChanged(nameof(TimeSlider));
-            };
+            DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(100)};
+            timer.Tick += timer_Tick;
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, EventArgs e) {
+            if (ActiveSong != null && _timeDragStarted == false) {
+                _timerTick = true;
+                TimeSlider.Value = Player.controls.currentPosition;
+                CurrentTime = Player.controls.currentPosition;
+                _timerTick = false;
+            }
         }
 
         private void SongList_Drop(object sender, DragEventArgs e) {
@@ -134,7 +149,8 @@ namespace MusicPlayer {
                 AddSong(item);
             }
 
-            Player.settings.volume = Settings.Default.Volume;
+            // Sets volume from last session
+            CurrentVolume = Settings.Default.Volume;
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e) {
@@ -149,39 +165,59 @@ namespace MusicPlayer {
             Settings.Default.Save();
         }
 
+        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Space) {
+                PlayPause();
+            }
+        }
+
+        // TODO Make it randomly generate next song
         private void ShuffleBtn_OnClick(object sender, RoutedEventArgs e) {
             IsShuffling = !IsShuffling;
         }
 
+        // TODO Make it repeat playlist after last song finishes
         private void RepeatBtn_OnClick(object sender, RoutedEventArgs e) {
             IsRepeating = !IsRepeating;
+        }
+
+        // TODO Make song restart, if pressed while CurrentPosition is less than 3 seconds play previous song
+        private void BackwardBtn_OnClick(object sender, RoutedEventArgs e) {
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
             PlayPause();
         }
 
-        // TODO Fix starting over if it's the same song
-        private void PlayPause() {
-            //PauseTime = CurrentTime;
+        // TODO Skip to next song
+        private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
+        }
 
-            if (SongList.Count > 0)
-            {
-                if (ActiveSong == null) ActiveSong = SongList.First();
+        private void PlayPause() {
+            PauseTime = Player.controls.currentPosition;
+
+            if (SongList.Count > 0) {
+                if (ActiveSong == null) {
+                    ActiveSong = SongList.First();
+                    OnPropertyChanged(nameof(ActiveSong));
+                    SongListView.SelectedIndex = 0;
+                }
 
                 // Play
-                if (!IsPlaying)
-                {
+                if (!IsPlaying) {
+                    Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 0.0;
+
                     if (Player.URL != ActiveSong.Path)
                         Player.URL = ActiveSong.Path;
+
+                    // Play song and change IsPlaying status
                     Player.controls.play();
-                    //Player.controls.currentPosition = ActiveSong.Path == Player.URL ? PauseTime : 0.0;
-                    Player.controls.currentPosition = PauseTime;
                     IsPlaying = !IsPlaying;
                 } // Pause
-                else if (IsPlaying)
-                {
+                else if (IsPlaying) {
                     PauseTime = Player.controls.currentPosition;
+
+                    // Pause song and change IsPlaying status
                     Player.controls.pause();
                     IsPlaying = !IsPlaying;
                 }
@@ -190,7 +226,7 @@ namespace MusicPlayer {
 
         private void SongListView_OnMouseDown(object sender, MouseButtonEventArgs e) {
             DependencyObject obj = (DependencyObject) e.OriginalSource;
-            
+
             if (obj.GetType() != typeof(ListViewItem)) {
                 SongListView.SelectedItem = null;
             }
@@ -199,12 +235,13 @@ namespace MusicPlayer {
         private void SongListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             DependencyObject obj = (DependencyObject) e.OriginalSource;
 
-            if (e.ChangedButton == MouseButton.Right)
-            {
+            if (e.ChangedButton == MouseButton.Right) {
                 if (SongList.Count == 0) return;
                 SongList.Clear();
-                IsPlaying = false;
+
+                // Stop song and change IsPlaying status
                 Player.controls.stop();
+                IsPlaying = false;
                 return;
             }
 
@@ -228,17 +265,13 @@ namespace MusicPlayer {
             }
         }
 
-        // TODO Fix clearing
-        private void SongList_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            //if (Settings.Default.Songs.Count == 0) return;
-            //Settings.Default.Songs.Clear();
-            //Settings.Default.Save();
-            //Settings.Default.Reload();
-        }
-
         private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            if (_timeDragStarted == false) {
-                Player.controls.currentPosition = CurrentTime;
+            if (_timeDragStarted == false && _timerTick == false) {
+                Player.controls.currentPosition = TimeSlider.Value;
+            }
+            else if (_timeDragStarted) {
+                // If dragging, update CurrentTime constantly so TimeSpentLabel updates
+                CurrentTime = TimeSlider.Value;
             }
         }
 
@@ -247,12 +280,8 @@ namespace MusicPlayer {
         }
 
         private void TimeSlider_OnDragCompleted(object sender, DragCompletedEventArgs e) {
-            Player.controls.currentPosition = CurrentTime;
+            Player.controls.currentPosition = TimeSlider.Value;
             _timeDragStarted = false;
-        }
-
-        private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
-            // TODO Skip to next song
         }
 
         public object RaisePropertyEvent { get; set; }

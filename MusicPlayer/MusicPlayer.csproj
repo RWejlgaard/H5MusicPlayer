@@ -34,6 +34,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Yfitops.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
@@ -64,6 +71,7 @@
     <Compile Include="Converters\BoolPlayPauseImageConverter.cs" />
     <Compile Include="Converters\BoolRepeatImageConverter.cs" />
     <Compile Include="Converters\BoolShuffleImageConverter.cs" />
+    <Compile Include="Converters\TimeSliderDoubleToTimeString.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Song.cs" />
     <Page Include="MainWindow.xaml">
@@ -137,6 +145,19 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Repeat-Enabled-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\Yfitops-128.png" />
+    <Resource Include="Resources\Logos\Yfitops-16.png" />
+    <Resource Include="Resources\Logos\Yfitops-256.png" />
+    <Resource Include="Resources\Logos\Yfitops-32.png" />
+    <Resource Include="Resources\Logos\Yfitops-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\Yfitops.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Yfitops.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
