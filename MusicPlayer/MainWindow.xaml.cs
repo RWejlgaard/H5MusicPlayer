@@ -15,10 +15,9 @@ using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
 
-// TODO Make VolumeBtn save CurrentVolume and then change volume to 0 (Use _volumeMuted and _savedVolume
+// TODO Make VolumeBtn save CurrentVolume and then change volume to 0 (Use _volumeMuted and _savedVolume)
 // TODO Make VolumeBtnImage change depending on what CurrentVolume is at
 // TODO Rework SongListView
-// TODO Fix 
 namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -96,7 +95,7 @@ namespace MusicPlayer {
         public MainWindow() {
             InitializeComponent();
 
-            DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(100)};
+            DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(250)};
             timer.Tick += timer_Tick;
             timer.Start();
         }
