@@ -18,15 +18,18 @@ using WMPLib;
 // TODO Make VolumeBtn save CurrentVolume and then change volume to 0 (Use _volumeMuted and _savedVolume)
 // TODO Make VolumeBtnImage change depending on what CurrentVolume is at
 // TODO Rework SongListView
-namespace MusicPlayer {
+namespace MusicPlayer
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : INotifyPropertyChanged {
+    public partial class MainWindow : INotifyPropertyChanged
+    {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
         public Song ActiveSong { get; set; }
         public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
         private bool _timeDragStarted;
+
         private bool _timerTick;
         //private bool _volumeMuted;
         //private int _savedVolume;
@@ -98,6 +101,27 @@ namespace MusicPlayer {
             DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(250)};
             timer.Tick += timer_Tick;
             timer.Start();
+
+            Player.StatusChange += Player_StatusChange;
+        }
+
+        private void Player_StatusChange() {
+            if (Player.status.Contains("Finished")) {
+                if (IsShuffling) {
+                    var rand = new Random();
+                    ChangeSong(SongList[rand.Next(0, SongList.Count)]);
+                    OnPropertyChanged(nameof(ActiveSong));
+                }
+                else if (IsRepeating && ActiveSong == SongList.Last()) {
+                    ChangeSong(SongList.First());
+                    OnPropertyChanged(nameof(ActiveSong));
+                }
+                else {
+                    if (ActiveSong != SongList.Last())
+                        ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
+                    OnPropertyChanged(nameof(ActiveSong));
+                }
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e) {
@@ -129,7 +153,7 @@ namespace MusicPlayer {
                     SongList.Add(new Song {
                         Path = path,
                         Title = metadata.Tag.Title,
-                        Artist = metadata.Tag.Performers[0],
+                        Artist = metadata.Tag.FirstAlbumArtist,
                         Duration = metadata.Properties.Duration.TotalSeconds
                     });
                 }
@@ -170,18 +194,22 @@ namespace MusicPlayer {
             }
         }
 
-        // TODO Make it randomly generate next song
         private void ShuffleBtn_OnClick(object sender, RoutedEventArgs e) {
             IsShuffling = !IsShuffling;
         }
 
-        // TODO Make it repeat playlist after last song finishes
         private void RepeatBtn_OnClick(object sender, RoutedEventArgs e) {
             IsRepeating = !IsRepeating;
         }
 
         // TODO Make song restart, if pressed while CurrentPosition is less than 3 seconds play previous song
         private void BackwardBtn_OnClick(object sender, RoutedEventArgs e) {
+            if (ActiveSong != SongList.First())
+                ChangeSong(SongList[SongList.IndexOf(ActiveSong) - 1]);
+            else
+                ChangeSong(SongList.Last());
+
+            OnPropertyChanged(nameof(ActiveSong));
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
@@ -190,6 +218,12 @@ namespace MusicPlayer {
 
         // TODO Skip to next song
         private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
+            if (ActiveSong != SongList.Last())
+                ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
+            else
+                ChangeSong(SongList.First());
+
+            OnPropertyChanged(nameof(ActiveSong));
         }
 
         private void PlayPause() {
@@ -231,6 +265,20 @@ namespace MusicPlayer {
             }
         }
 
+        private void ChangeSong(Song song) {
+            IsPlaying = false;
+
+            if (ActiveSong == song) {
+                Player.controls.currentPosition = 0.0;
+            }
+            else {
+                ActiveSong = song;
+                OnPropertyChanged(nameof(ActiveSong));
+            }
+
+            PlayPause();
+        }
+
         private void SongListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             DependencyObject obj = (DependencyObject) e.OriginalSource;
 
@@ -246,18 +294,7 @@ namespace MusicPlayer {
 
             while (obj != null && obj != SongListView) {
                 if (obj.GetType() == typeof(ListViewItem)) {
-                    var song = (Song) SongListView.SelectedItem;
-                    IsPlaying = false;
-
-                    if (ActiveSong == song) {
-                        Player.controls.currentPosition = 0.0;
-                    }
-                    else {
-                        ActiveSong = song;
-                        OnPropertyChanged(nameof(ActiveSong));
-                    }
-
-                    PlayPause();
+                    ChangeSong((Song) SongListView.SelectedItem);
                     break;
                 }
                 obj = VisualTreeHelper.GetParent(obj);
