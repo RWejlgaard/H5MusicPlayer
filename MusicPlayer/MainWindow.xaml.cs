@@ -15,24 +15,29 @@ using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
 
-// TODO Make VolumeBtn save CurrentVolume and then change volume to 0 (Use _volumeMuted and _savedVolume)
-// TODO Make VolumeBtnImage change depending on what CurrentVolume is at
 // TODO Rework SongListView
-namespace MusicPlayer
-{
+namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : INotifyPropertyChanged
-    {
+    public partial class MainWindow : INotifyPropertyChanged {
         public ObservableCollection<Song> SongList { get; set; } = new ObservableCollection<Song>();
-        public Song ActiveSong { get; set; }
         public WindowsMediaPlayer Player { get; set; } = new WindowsMediaPlayer();
         private bool _timeDragStarted;
 
         private bool _timerTick;
-        //private bool _volumeMuted;
-        //private int _savedVolume;
+        private bool _volumeMuted;
+        private int _savedVolume;
+
+        private Song _activeSong;
+
+        public Song ActiveSong {
+            get { return _activeSong; }
+            set {
+                _activeSong = value;
+                OnPropertyChanged(nameof(ActiveSong));
+            }
+        }
 
         private bool _isShuffling;
 
@@ -99,71 +104,10 @@ namespace MusicPlayer
             InitializeComponent();
 
             DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(250)};
-            timer.Tick += timer_Tick;
+            timer.Tick += Timer_Tick;
             timer.Start();
 
             Player.StatusChange += Player_StatusChange;
-        }
-
-        private void Player_StatusChange() {
-            if (Player.status.Contains("Finished")) {
-                if (IsShuffling) {
-                    var rand = new Random();
-                    ChangeSong(SongList[rand.Next(0, SongList.Count)]);
-                    OnPropertyChanged(nameof(ActiveSong));
-                }
-                else if (IsRepeating && ActiveSong == SongList.Last()) {
-                    ChangeSong(SongList.First());
-                    OnPropertyChanged(nameof(ActiveSong));
-                }
-                else {
-                    if (ActiveSong != SongList.Last())
-                        ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
-                    OnPropertyChanged(nameof(ActiveSong));
-                }
-            }
-        }
-
-        private void timer_Tick(object sender, EventArgs e) {
-            if (ActiveSong != null && _timeDragStarted == false) {
-                _timerTick = true;
-                TimeSlider.Value = Player.controls.currentPosition;
-                CurrentTime = Player.controls.currentPosition;
-                _timerTick = false;
-            }
-        }
-
-        private void SongList_Drop(object sender, DragEventArgs e) {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-
-            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
-
-            if (files == null) return;
-
-            foreach (var file in files) {
-                AddSong(file);
-            }
-        }
-
-        private void AddSong(string path) {
-            if (Regex.IsMatch(path, ".mp3$")) {
-                try {
-                    var metadata = File.Create(path);
-
-                    SongList.Add(new Song {
-                        Path = path,
-                        Title = metadata.Tag.Title,
-                        Artist = metadata.Tag.FirstAlbumArtist,
-                        Duration = metadata.Properties.Duration.TotalSeconds
-                    });
-                }
-                catch (CorruptFileException) {
-                    MessageBox.Show("File seems to be corrupt. Could not read metadata");
-                }
-                catch (Exception exception) {
-                    MessageBox.Show(exception.ToString());
-                }
-            }
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
@@ -194,6 +138,108 @@ namespace MusicPlayer
             }
         }
 
+        private void Player_StatusChange() {
+            if (Player.status.Contains("Finished")) {
+                if (IsShuffling) {
+                    var rand = new Random();
+                    ChangeSong(SongList[rand.Next(0, SongList.Count)]);
+                }
+                else if (IsRepeating && ActiveSong == SongList.Last()) {
+                    ChangeSong(SongList.First());
+                }
+                else {
+                    if (ActiveSong != SongList.Last())
+                        ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
+                }
+            }
+
+            /*
+            
+            Alright, so I haven't figured out why, but I sort of know what is going on.
+             
+            Basically, once a song stops playing it will switch songs but gets stuck on the status 'Ready'.
+            For some reason, if you try and start the player if the status is 'Ready' then it will break (possible more than once).
+             
+            I fixed it by putting it in a try-catch.
+
+            But.... TODO Find a proper solution to this kludge...
+
+            This also slows the whole ChangeSong process for some reason.
+
+            */
+            if (Player.status.Contains("Ready"))
+                try {
+                    Player.controls.play();
+                }
+                catch (Exception) {
+                    // ignored
+                }
+
+            StatusLabel.Content = Player.status;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e) {
+            if (ActiveSong != null && _timeDragStarted == false) {
+                _timerTick = true;
+                TimeSlider.Value = Player.controls.currentPosition;
+                CurrentTime = Player.controls.currentPosition;
+                _timerTick = false;
+            }
+        }
+
+        private void SongList_Drop(object sender, DragEventArgs e) {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+
+            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+            if (files == null) return;
+
+            foreach (var file in files) {
+                AddSong(file);
+            }
+
+            // TODO Save songs here too?
+            /*
+            Settings.Default.SongPathList.Clear();
+            foreach (var item in SongList) {
+                Settings.Default.SongPathList.Add(item.Path);
+            }
+            */
+        }
+
+        private void AddSong(string path) {
+            if (Regex.IsMatch(path, ".mp3$")) {
+                try {
+                    var metadata = File.Create(path);
+
+                    SongList.Add(new Song {
+                        Path = path,
+                        Title = metadata.Tag.Title,
+                        Artist = metadata.Tag.FirstPerformer,
+                        Duration = metadata.Properties.Duration.TotalSeconds
+                    });
+                }
+                catch (CorruptFileException) {
+                    MessageBox.Show("File seems to be corrupt. Could not read metadata");
+                }
+                catch (Exception exception) {
+                    MessageBox.Show(exception.ToString());
+                }
+            }
+        }
+
+        private void VolumeBtn_OnClick(object sender, RoutedEventArgs e) {
+            if (_volumeMuted) {
+                CurrentVolume = _savedVolume;
+                _volumeMuted = false;
+            }
+            else if (!_volumeMuted) {
+                _savedVolume = CurrentVolume;
+                CurrentVolume = 0;
+                _volumeMuted = true;
+            }
+        }
+
         private void ShuffleBtn_OnClick(object sender, RoutedEventArgs e) {
             IsShuffling = !IsShuffling;
         }
@@ -202,28 +248,23 @@ namespace MusicPlayer
             IsRepeating = !IsRepeating;
         }
 
-        // TODO Make song restart, if pressed while CurrentPosition is less than 3 seconds play previous song
         private void BackwardBtn_OnClick(object sender, RoutedEventArgs e) {
-            if (ActiveSong != SongList.First())
-                ChangeSong(SongList[SongList.IndexOf(ActiveSong) - 1]);
-            else
-                ChangeSong(SongList.Last());
+            var newSong = ActiveSong != SongList.First() ? SongList[SongList.IndexOf(ActiveSong) - 1] : SongList.Last();
 
-            OnPropertyChanged(nameof(ActiveSong));
+            if (Player.controls.currentPosition > 3.0) {
+                Player.controls.currentPosition = 0.0;
+            }
+            else {
+                ChangeSong(newSong);
+            }
+        }
+
+        private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
+            ChangeSong(ActiveSong != SongList.Last() ? SongList[SongList.IndexOf(ActiveSong) + 1] : SongList.First());
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
             PlayPause();
-        }
-
-        // TODO Skip to next song
-        private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
-            if (ActiveSong != SongList.Last())
-                ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
-            else
-                ChangeSong(SongList.First());
-
-            OnPropertyChanged(nameof(ActiveSong));
         }
 
         private void PlayPause() {
@@ -232,7 +273,6 @@ namespace MusicPlayer
             if (SongList.Count > 0) {
                 if (ActiveSong == null) {
                     ActiveSong = SongList.First();
-                    OnPropertyChanged(nameof(ActiveSong));
                     SongListView.SelectedIndex = 0;
                 }
 
@@ -257,14 +297,6 @@ namespace MusicPlayer
             }
         }
 
-        private void SongListView_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            DependencyObject obj = (DependencyObject) e.OriginalSource;
-
-            if (obj.GetType() != typeof(ListViewItem)) {
-                SongListView.SelectedItem = null;
-            }
-        }
-
         private void ChangeSong(Song song) {
             IsPlaying = false;
 
@@ -273,10 +305,17 @@ namespace MusicPlayer
             }
             else {
                 ActiveSong = song;
-                OnPropertyChanged(nameof(ActiveSong));
             }
 
             PlayPause();
+        }
+
+        private void SongListView_OnMouseDown(object sender, MouseButtonEventArgs e) {
+            DependencyObject obj = (DependencyObject) e.OriginalSource;
+
+            if (obj.GetType() != typeof(ListViewItem)) {
+                SongListView.SelectedItem = null;
+            }
         }
 
         private void SongListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
@@ -292,12 +331,12 @@ namespace MusicPlayer
                 return;
             }
 
-            while (obj != null && obj != SongListView) {
+            while (obj != null && !Equals(obj, SongListView)) {
                 if (obj.GetType() == typeof(ListViewItem)) {
                     ChangeSong((Song) SongListView.SelectedItem);
                     break;
                 }
-                obj = VisualTreeHelper.GetParent(obj);
+                obj = VisualTreeHelper.GetParent(obj); // DO NOT TOUCH.
             }
         }
 

@@ -71,7 +71,8 @@
     <Compile Include="Converters\BoolPlayPauseImageConverter.cs" />
     <Compile Include="Converters\BoolRepeatImageConverter.cs" />
     <Compile Include="Converters\BoolShuffleImageConverter.cs" />
-    <Compile Include="Converters\TimeSliderDoubleToTimeString.cs" />
+    <Compile Include="Converters\TimeDoubleToString.cs" />
+    <Compile Include="Converters\VolumeSliderDoubleImageConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Song.cs" />
     <Page Include="MainWindow.xaml">
@@ -158,6 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Yfitops.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\Yfitops-Original.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

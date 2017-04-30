@@ -3,21 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:l="clr-namespace:MusicPlayer"
-        xmlns:properties="clr-namespace:MusicPlayer.Properties"
         xmlns:conv="clr-namespace:MusicPlayer.Converters"
-        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450" Closed="MainWindow_OnClosed" Loaded="MainWindow_OnLoaded"
-        ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}" PreviewKeyDown="MainWindow_PreviewKeyDown">
+        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450"
+        Closed="MainWindow_OnClosed" Loaded="MainWindow_OnLoaded"
+        ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        PreviewKeyDown="MainWindow_PreviewKeyDown" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <!-- Colours -->
-        <SolidColorBrush x:Key="AccentColour" Color="#A936F1"/> 
+        <SolidColorBrush x:Key="AccentColour" Color="#A936F1" />
 
         <!-- Converters -->
-        <conv:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter"/> 
-        <conv:BoolShuffleImageConverter x:Key="BoolShuffleImageConverter"/> 
-        <conv:BoolRepeatImageConverter x:Key="BoolRepeatImageConverter"/>
-        <conv:TimeSliderDoubleToTimeString x:Key="TimeSliderDoubleToTimeString"/>
+        <conv:BoolPlayPauseImageConverter x:Key="BoolPlayPauseImageConverter" />
+        <conv:BoolShuffleImageConverter x:Key="BoolShuffleImageConverter" />
+        <conv:BoolRepeatImageConverter x:Key="BoolRepeatImageConverter" />
+        <conv:TimeDoubleToString x:Key="TimeDoubleToString" />
+        <conv:VolumeSliderDoubleImageConverter x:Key="VolumeSliderDoubleImageConverter" />
 
         <!-- TimeTrack Slider -->
         <Style x:Key="TimeTrackSliderRepeatButton" TargetType="RepeatButton">
@@ -28,7 +29,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border  BorderThickness="1" BorderBrush="Black" Background="Black" Height="3"/>
+                        <Border BorderThickness="1" BorderBrush="Black" Background="Black" Height="3" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -39,7 +40,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"  BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"
+                                BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -50,33 +52,35 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <ControlTemplate x:Key="TimeTrackSliderTemplate"  TargetType="Slider">
+        <ControlTemplate x:Key="TimeTrackSliderTemplate" TargetType="Slider">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Track Grid.Row="1" x:Name="PART_Track"   >
+                <Track Grid.Row="1" x:Name="PART_Track">
                     <Track.DecreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource TimeTrackSliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
+                        <RepeatButton Style="{StaticResource TimeTrackSliderRepeatButton1}"
+                                      Command="Slider.DecreaseLarge" />
                     </Track.DecreaseRepeatButton>
                     <Track.Thumb>
-                        <Thumb Style="{StaticResource TimeTrackSliderThumb}"  />
+                        <Thumb Style="{StaticResource TimeTrackSliderThumb}" />
                     </Track.Thumb>
                     <Track.IncreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource TimeTrackSliderRepeatButton}" Command="Slider.IncreaseLarge" />
+                        <RepeatButton Style="{StaticResource TimeTrackSliderRepeatButton}"
+                                      Command="Slider.IncreaseLarge" />
                     </Track.IncreaseRepeatButton>
                 </Track>
             </Grid>
         </ControlTemplate>
         <Style x:Key="TimeTrackSlider" TargetType="Slider">
-            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Focusable" Value="False" />
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
             <Setter Property="IsMoveToPointEnabled" Value="true" />
@@ -98,7 +102,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border  BorderThickness="1" BorderBrush="Black" Background="Black" Height="3"/>
+                        <Border BorderThickness="1" BorderBrush="Black" Background="Black" Height="3" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -109,7 +113,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"  BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3"/>
+                        <Border SnapsToDevicePixels="True" Background="{StaticResource AccentColour}"
+                                BorderThickness="1" BorderBrush="{StaticResource AccentColour}" Height="3" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -120,24 +125,24 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}"></Ellipse>
+                        <Ellipse Height="10" Width="10" Fill="{StaticResource AccentColour}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <ControlTemplate x:Key="VolumeSliderTemplate"  TargetType="Slider">
+        <ControlTemplate x:Key="VolumeSliderTemplate" TargetType="Slider">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Track Grid.Row="1" x:Name="PART_Track"   >
+                <Track Grid.Row="1" x:Name="PART_Track">
                     <Track.DecreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource VolumeSliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
+                        <RepeatButton Style="{StaticResource VolumeSliderRepeatButton1}" Command="Slider.DecreaseLarge" />
                     </Track.DecreaseRepeatButton>
                     <Track.Thumb>
-                        <Thumb Style="{StaticResource VolumeSliderThumb}"  />
+                        <Thumb Style="{StaticResource VolumeSliderThumb}" />
                     </Track.Thumb>
                     <Track.IncreaseRepeatButton>
                         <RepeatButton Style="{StaticResource VolumeSliderRepeatButton}" Command="Slider.IncreaseLarge" />
@@ -146,7 +151,7 @@
             </Grid>
         </ControlTemplate>
         <Style x:Key="VolumeTrackSlider" TargetType="Slider">
-            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Focusable" Value="False" />
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
             <Setter Property="IsMoveToPointEnabled" Value="true" />
@@ -163,73 +168,105 @@
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Song list labels -->
-        <Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left"/>
-        <Label Content="Artist" FontSize="11" Grid.Row="0" Grid.Column="1" Margin="5,0" HorizontalAlignment="Left"/>
-        <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right"/>
+        <Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left" />
+        <Label Content="Artist" FontSize="11" Grid.Row="0" Grid.Column="1" Margin="5,0" HorizontalAlignment="Left" HorizontalContentAlignment="Center" />
+        <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right" />
 
         <!-- Song list -->
-        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0" AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" Margin="5,0" MouseDown="SongListView_OnMouseDown" MouseDoubleClick="SongListView_OnMouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0"
+                  AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" Margin="5,0"
+                  MouseDown="SongListView_OnMouseDown" MouseDoubleClick="SongListView_OnMouseDoubleClick"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="410">
-                        <TextBlock Text="{Binding Path=Title}" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Path=Artist}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Path=Duration}" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=Title}" HorizontalAlignment="Left"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Path=Artist}" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Path=Duration, Converter={StaticResource TimeDoubleToString}}" HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <!-- Song controls -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0">
-            <Button x:Name="ShuffleBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent" Click="ShuffleBtn_OnClick">
-                <Image x:Name="ShuffleBtnImage" Source="{Binding Path=IsShuffling, Converter={StaticResource BoolShuffleImageConverter}}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40,0,0,0">
+            <Button x:Name="ShuffleBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0"
+                    Background="Transparent" Click="ShuffleBtn_OnClick">
+                <Image x:Name="ShuffleBtnImage"
+                       Source="{Binding Path=IsShuffling, Converter={StaticResource BoolShuffleImageConverter}}" />
             </Button>
-            <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent" Click="BackwardBtn_OnClick">
-                <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png"/>
+            <Button x:Name="BackwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent"
+                    Click="BackwardBtn_OnClick">
+                <Image x:Name="BackwardBtnImage" Source="Resources\Start-96.png" />
             </Button>
-            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent" Click="PlayBtn_Click">
-                <Image x:Name="PlayBtnImage" Source="{Binding Path=IsPlaying, Converter={StaticResource BoolPlayPauseImageConverter}}"/>
+            <Button x:Name="PlayBtn" Width="40" Height="40" Margin="2,2" BorderThickness="0" Background="Transparent"
+                    Click="PlayBtn_Click">
+                <Image x:Name="PlayBtnImage"
+                       Source="{Binding Path=IsPlaying, Converter={StaticResource BoolPlayPauseImageConverter}}" />
             </Button>
-            <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent" Click="ForwardBtn_OnClick">
-                <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png"/>
+            <Button x:Name="ForwardBtn" Width="25" Height="25" Margin="2" BorderThickness="0" Background="Transparent"
+                    Click="ForwardBtn_OnClick">
+                <Image x:Name="ForwardBtnImage" Source="Resources\End-96.png" />
             </Button>
-            <Button x:Name="RepeatBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent" Click="RepeatBtn_OnClick">
-                <Image x:Name="RepeatBtnImage" Source="{Binding Path=IsRepeating, Converter={StaticResource BoolRepeatImageConverter}}"/>
+            <Button x:Name="RepeatBtn" Width="25" Height="25" Margin="5,0" BorderThickness="0" Background="Transparent"
+                    Click="RepeatBtn_OnClick">
+                <Image x:Name="RepeatBtnImage"
+                       Source="{Binding Path=IsRepeating, Converter={StaticResource BoolRepeatImageConverter}}" />
             </Button>
         </StackPanel>
 
         <!-- Song volume -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="17,0,0,0">
-            <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0">
-                <Image x:Name="VolumeBtnImage" Source="Resources/HighVolume-96.png" Height="20" Width="20"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="20,0,0,0">
+            <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0" Click="VolumeBtn_OnClick">
+                <Image x:Name="VolumeBtnImage" Source="{Binding CurrentVolume, Converter={StaticResource VolumeSliderDoubleImageConverter}}" Height="20" Width="20" />
             </Button>
-            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100" Value="{Binding CurrentVolume, Mode=TwoWay}" Maximum="100" VerticalAlignment="Center" Margin="5,0,0,1" TickPlacement="TopLeft" SmallChange="1"/>
-            <Label x:Name="VolumeValueLabel" Content="{Binding CurrentVolume, FallbackValue=0}" HorizontalAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,1"/>
+            <Slider x:Name="VolumeSlider" Style="{StaticResource VolumeTrackSlider}" Width="100"
+                    Value="{Binding CurrentVolume, Mode=TwoWay}"
+                    Maximum="100" VerticalAlignment="Center" Margin="5,0,0,0" TickPlacement="TopLeft" SmallChange="1" />
+            <Label x:Name="VolumeValueLabel" Content="{Binding CurrentVolume, FallbackValue=0}"
+                   VerticalContentAlignment="Center" Margin="0,0,0,1" VerticalAlignment="Center"
+                   HorizontalAlignment="Right" />
         </StackPanel>
 
         <!-- Song progress -->
-        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="15,0,15,5" VerticalAlignment="Center">
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,5" VerticalAlignment="Center"
+              HorizontalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label x:Name="TimeSpentLabel" Content="{Binding CurrentTime, FallbackValue=0:00, Converter={StaticResource TimeSliderDoubleToTimeString}}" Grid.Column="0" HorizontalAlignment="Left"/>
-            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Grid.Column="1" Width="Auto" Minimum="0" Value="0" Maximum="{Binding ActiveSong.Duration}" VerticalAlignment="Center" Margin="0,3,0,2" ValueChanged="TimeSlider_ValueChanged" Thumb.DragStarted="TimeSlider_OnDragStarted"  Thumb.DragCompleted="TimeSlider_OnDragCompleted"/>
-            <Label x:Name="TimeTotalLabel" Content="{Binding ActiveSong.Duration, FallbackValue=0:00, Converter={StaticResource TimeSliderDoubleToTimeString}}" Grid.Column="2" HorizontalAlignment="Right"/>
+            <Label x:Name="TimeSpentLabel"
+                   Content="{Binding CurrentTime, FallbackValue=0:00, Converter={StaticResource TimeDoubleToString}}"
+                   Width="38" Grid.Column="0" HorizontalAlignment="Right" HorizontalContentAlignment="Right" />
+            <Slider x:Name="TimeSlider" Style="{StaticResource TimeTrackSlider}" Minimum="0" Value="0"
+                    Maximum="{Binding ActiveSong.Duration}" Grid.Column="1" Width="348"
+                    Margin="0,3,0,2" ValueChanged="TimeSlider_ValueChanged"
+                    Thumb.DragStarted="TimeSlider_OnDragStarted" Thumb.DragCompleted="TimeSlider_OnDragCompleted"
+                    HorizontalContentAlignment="Center" HorizontalAlignment="Center" />
+            <Label x:Name="TimeTotalLabel"
+                   Content="{Binding ActiveSong.Duration, FallbackValue=0:00, Converter={StaticResource TimeDoubleToString}}"
+                   Width="38" Grid.Column="2" HorizontalAlignment="Left" />
         </Grid>
+
+        <Label x:Name="StatusLabel" Grid.Row="4" Grid.Column="0" Content="Status Label" Width="Auto" Height="Auto" FontSize="8" VerticalAlignment="Center" Padding="5,1,5,0" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>
