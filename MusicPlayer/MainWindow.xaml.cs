@@ -106,8 +106,7 @@ namespace MusicPlayer {
             DispatcherTimer timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(250)};
             timer.Tick += Timer_Tick;
             timer.Start();
-
-            Player.StatusChange += Player_StatusChange;
+            Player.PlayStateChange += Player_StateChange;
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
@@ -138,43 +137,42 @@ namespace MusicPlayer {
             }
         }
 
-        private void Player_StatusChange() {
-            if (Player.status.Contains("Finished")) {
-                if (IsShuffling) {
-                    var rand = new Random();
-                    ChangeSong(SongList[rand.Next(0, SongList.Count)]);
-                }
-                else if (IsRepeating && ActiveSong == SongList.Last()) {
-                    ChangeSong(SongList.First());
-                }
-                else {
-                    if (ActiveSong != SongList.Last())
-                        ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
-                }
+        private void Player_StateChange(int newState) {
+            switch (newState) {
+                case (int) WMPPlayState.wmppsMediaEnded:
+                    if (IsShuffling) {
+                        var rand = new Random();
+                        ChangeSong(SongList[rand.Next(0, SongList.Count)]);
+                    }
+                    else if (IsRepeating && ActiveSong == SongList.Last()) {
+                        ChangeSong(SongList.First());
+                    }
+                    else {
+                        if (ActiveSong != SongList.Last())
+                            ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
+                    }
+                    break;
+
+                case (int) WMPPlayState.wmppsReady:
+                    Player.controls.play();
+                    break;
             }
 
             /*
             
-            Alright, so I haven't figured out why, but I sort of know what is going on.
+            Alright, so we haven't figured out why, but we sort of know what is going on.
              
             Basically, once a song stops playing it will switch songs but gets stuck on the status 'Ready'.
             For some reason, if you try and start the player if the status is 'Ready' then it will break (possible more than once).
              
-            I fixed it by putting it in a try-catch.
+            We fixed it by putting it in a try-catch.
 
             But.... TODO Find a proper solution to this kludge...
 
             This also slows the whole ChangeSong process for some reason.
 
             */
-            if (Player.status.Contains("Ready"))
-                try {
-                    Player.controls.play();
-                }
-                catch (Exception) {
-                    // ignored
-                }
-
+            
             StatusLabel.Content = Player.status;
         }
 
