@@ -15,7 +15,6 @@ using MusicPlayer.Properties;
 using TagLib;
 using WMPLib;
 
-// TODO Rework SongListView
 namespace MusicPlayer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -172,7 +171,7 @@ namespace MusicPlayer {
                     Player.controls.play();
                 }
                 catch (Exception) {
-                    // ignored
+                    //ignored
                 }
 
             StatusLabel.Content = Player.status;
@@ -197,14 +196,6 @@ namespace MusicPlayer {
             foreach (var file in files) {
                 AddSong(file);
             }
-
-            // TODO Save songs here too?
-            /*
-            Settings.Default.SongPathList.Clear();
-            foreach (var item in SongList) {
-                Settings.Default.SongPathList.Add(item.Path);
-            }
-            */
         }
 
         private void AddSong(string path) {

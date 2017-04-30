@@ -68,3 +68,4 @@ C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csproj.GenerateResource.Cache
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.exe
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.pdb
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csprojResolveAssemblyReference.cache

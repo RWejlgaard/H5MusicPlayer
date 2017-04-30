@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="clr-namespace:MusicPlayer.Converters"
-        mc:Ignorable="d" Title="Yfitops" Height="450" Width="450"
+        mc:Ignorable="d" Title="Yfitops" Height="448" Width="450"
         Closed="MainWindow_OnClosed" Loaded="MainWindow_OnLoaded"
         ResizeMode="NoResize" DataContext="{Binding RelativeSource={RelativeSource Self}}"
         PreviewKeyDown="MainWindow_PreviewKeyDown" WindowStartupLocation="CenterScreen">
@@ -181,25 +181,42 @@
         </Grid.ColumnDefinitions>
 
         <!-- Song list labels -->
-        <Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left" />
+        <!--<Label Content="Song" FontSize="11" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left" />
         <Label Content="Artist" FontSize="11" Grid.Row="0" Grid.Column="1" Margin="5,0" HorizontalAlignment="Left" HorizontalContentAlignment="Center" />
-        <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right" />
+        <Label Content="Duration" FontSize="11" Grid.Row="0" Grid.Column="2" Margin="5,0" HorizontalAlignment="Right" />-->
+
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="6,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="TITLE" FontSize="10" Width="188" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" />
+            <Label Content="ARTIST" FontSize="10" Width="188" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" />
+            <Label Content="DURATION" FontSize="10" Width="58" Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Right" HorizontalAlignment="Right" />
+        </Grid>
 
         <!-- Song list -->
         <ListView x:Name="SongListView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="0"
-                  AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" Margin="5,0"
+                  AllowDrop="True" ItemsSource="{Binding Path=SongList}" Drop="SongList_Drop" Margin="0,0"
                   MouseDown="SongListView_OnMouseDown" MouseDoubleClick="SongListView_OnMouseDoubleClick"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Width="410">
-                        <TextBlock Text="{Binding Path=Title}" HorizontalAlignment="Left"
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="182"/>
+                            <ColumnDefinition Width="204"/>
+                            <ColumnDefinition Width="38"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Content="{Binding Path=Title}" HorizontalAlignment="Left" Grid.Column="0"
                                    VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Path=Artist}" HorizontalAlignment="Center"
+                        <Label Content="{Binding Path=Artist}" HorizontalAlignment="Left" Grid.Column="1"
                                    VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Path=Duration, Converter={StaticResource TimeDoubleToString}}" HorizontalAlignment="Right"
-                                   VerticalAlignment="Center" />
+                        <Label Content="{Binding Path=Duration, Converter={StaticResource TimeDoubleToString}}" Grid.Column="2" HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" HorizontalContentAlignment="Right" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -234,7 +251,7 @@
         </StackPanel>
 
         <!-- Song volume -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="20,0,0,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="43,0,0,0">
             <Button x:Name="VolumeBtn" Height="22" Width="22" Background="Transparent" BorderThickness="0" Click="VolumeBtn_OnClick">
                 <Image x:Name="VolumeBtnImage" Source="{Binding CurrentVolume, Converter={StaticResource VolumeSliderDoubleImageConverter}}" Height="20" Width="20" />
             </Button>
@@ -267,6 +284,6 @@
                    Width="38" Grid.Column="2" HorizontalAlignment="Left" />
         </Grid>
 
-        <Label x:Name="StatusLabel" Grid.Row="4" Grid.Column="0" Content="Status Label" Width="Auto" Height="Auto" FontSize="8" VerticalAlignment="Center" Padding="5,1,5,0" VerticalContentAlignment="Center"/>
+        <Label x:Name="StatusLabel" Grid.Row="4" Grid.Column="0" Content="Status Label" FontSize="8" Margin="0,-6,0,0" Padding="2"  Width="Auto" Height="Auto" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>
