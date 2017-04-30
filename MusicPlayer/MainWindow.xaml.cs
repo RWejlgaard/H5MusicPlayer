@@ -152,25 +152,30 @@ namespace MusicPlayer {
                     }
                     break;
 
+
+                /*
+
+                Alright, so we haven't figured out why, but we sort of know what is going on.
+
+                Basically, once a song stops playing it will switch songs but gets stuck on the status 'Ready'.
+                For some reason, if you try and start the player if the status is 'Ready' then it will break (possible more than once).
+
+                We fixed it by putting it in a try-catch.
+
+                But.... TODO Find a proper solution to this kludge...
+
+                This also slows the whole ChangeSong process for some reason.
+
+                */
                 case (int) WMPPlayState.wmppsReady:
-                    Player.controls.play();
+                    try {
+                        Player.controls.play();
+                    }
+                    catch (Exception) {
+                        //ignored
+                    }
                     break;
             }
-
-            /*
-            
-            Alright, so we haven't figured out why, but we sort of know what is going on.
-             
-            Basically, once a song stops playing it will switch songs but gets stuck on the status 'Ready'.
-            For some reason, if you try and start the player if the status is 'Ready' then it will break (possible more than once).
-             
-            We fixed it by putting it in a try-catch.
-
-            But.... TODO Find a proper solution to this kludge...
-
-            This also slows the whole ChangeSong process for some reason.
-
-            */
             
             StatusLabel.Content = Player.status;
         }
