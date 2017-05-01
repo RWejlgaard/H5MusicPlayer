@@ -68,4 +68,12 @@ C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csproj.GenerateResource.Cache
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.exe
 C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.pdb
-C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csprojResolveAssemblyReference.cache
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\bin\Debug\MusicPlayer.exe.manifest
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\bin\Debug\MusicPlayer.application
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.exe.manifest
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.application
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\MusicPlayer.exe.manifest
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\bin\Debug\MusicPlayer.application
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.csprojResolveAssemblyReference.cache
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.exe.manifest
+C:\Users\niklas.ATDATA\Documents\GitHub\H5MusicPlayer\MusicPlayer\obj\Debug\MusicPlayer.application

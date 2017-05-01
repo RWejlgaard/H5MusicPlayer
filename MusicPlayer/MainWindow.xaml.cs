@@ -243,6 +243,7 @@ namespace MusicPlayer {
         }
 
         private void BackwardBtn_OnClick(object sender, RoutedEventArgs e) {
+            // TODO Make shuffle work backwards
             var newSong = ActiveSong != SongList.First() ? SongList[SongList.IndexOf(ActiveSong) - 1] : SongList.Last();
 
             if (Player.controls.currentPosition > 3.0) {
@@ -254,7 +255,20 @@ namespace MusicPlayer {
         }
 
         private void ForwardBtn_OnClick(object sender, RoutedEventArgs e) {
-            ChangeSong(ActiveSong != SongList.Last() ? SongList[SongList.IndexOf(ActiveSong) + 1] : SongList.First());
+            if (IsShuffling)
+            {
+                var rand = new Random();
+                ChangeSong(SongList[rand.Next(0, SongList.Count)]);
+            }
+            else if (IsRepeating && ActiveSong == SongList.Last())
+            {
+                ChangeSong(SongList.First());
+            }
+            else
+            {
+                if (ActiveSong != SongList.Last())
+                    ChangeSong(SongList[SongList.IndexOf(ActiveSong) + 1]);
+            }
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e) {
